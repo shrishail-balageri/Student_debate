@@ -1,7 +1,6 @@
 // screens/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'debate_list_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
