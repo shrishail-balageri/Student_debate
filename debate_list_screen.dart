@@ -12,7 +12,7 @@ class StudentDebateApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Student Debate',
+      title: 'Speak Up',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: DebateScreen(),
     );
@@ -46,17 +46,19 @@ class _DebateScreenState extends State<DebateScreen> {
         .collection('questions')
         .doc(questionId)
         .collection('comments')
-        .add({
-      'text': text,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
+        .add({'text': text, 'createdAt': FieldValue.serverTimestamp()});
     _commentController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Student Debate App')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text('Speak Up'),
+        backgroundColor: Colors.white,
+        titleTextStyle: TextStyle(color: Colors.green.shade700, fontSize: 30),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -67,18 +69,26 @@ class _DebateScreenState extends State<DebateScreen> {
                 labelText: 'Raise a Question',
                 suffixIcon: IconButton(
                   icon: Icon(Icons.send),
+
                   onPressed: () => _addQuestion(_questionController.text),
                 ),
               ),
             ),
             Divider(height: 30),
-            Text("Questions", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              "Questions",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.green.shade700,
+              ),
+            ),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('questions')
-                    .orderBy('createdAt', descending: true)
-                    .snapshots(),
+                stream:
+                    FirebaseFirestore.instance
+                        .collection('questions')
+                        .orderBy('createdAt', descending: true)
+                        .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData)
                     return Center(child: CircularProgressIndicator());
@@ -107,7 +117,10 @@ class _DebateScreenState extends State<DebateScreen> {
               Divider(height: 30),
               Text(
                 'Question: $_selectedQuestionText',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green.shade700,
+                ),
               ),
               TextField(
                 controller: _commentController,
@@ -115,20 +128,24 @@ class _DebateScreenState extends State<DebateScreen> {
                   labelText: 'Add a Comment',
                   suffixIcon: IconButton(
                     icon: Icon(Icons.send),
-                    onPressed: () =>
-                        _addComment(_selectedQuestionId!, _commentController.text),
+                    onPressed:
+                        () => _addComment(
+                          _selectedQuestionId!,
+                          _commentController.text,
+                        ),
                   ),
                 ),
               ),
               SizedBox(height: 10),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('questions')
-                      .doc(_selectedQuestionId)
-                      .collection('comments')
-                      .orderBy('createdAt', descending: true)
-                      .snapshots(),
+                  stream:
+                      FirebaseFirestore.instance
+                          .collection('questions')
+                          .doc(_selectedQuestionId)
+                          .collection('comments')
+                          .orderBy('createdAt', descending: true)
+                          .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData)
                       return Center(child: CircularProgressIndicator());
@@ -138,9 +155,7 @@ class _DebateScreenState extends State<DebateScreen> {
                       itemCount: comments.length,
                       itemBuilder: (context, index) {
                         final comment = comments[index];
-                        return ListTile(
-                          title: Text(comment['text']),
-                        );
+                        return ListTile(title: Text(comment['text']));
                       },
                     );
                   },
